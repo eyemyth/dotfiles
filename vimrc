@@ -14,7 +14,7 @@ Bundle 'gmarik/vundle'
 
 Bundle 'garbas/vim-snipmate'
 Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'honza/snipmate-snippets'
+Bundle 'honza/vim-snippets'
 Bundle 'tomtom/tlib_vim'
 
 Bundle 'myusuf3/numbers.vim'
@@ -29,8 +29,6 @@ Bundle 'vim-scripts/pep8'
 Bundle 'sontek/rope-vim'
 
 Bundle 'Lokaltog/vim-easymotion'
-
-"Bundle 'Valloric/YouCompleteMe'
 
 Bundle 'airblade/vim-gitgutter'
 

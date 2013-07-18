@@ -7,7 +7,16 @@ set backspace=2
 
 set background=dark
 
-
+" Vundle setup
+let DoINeedVundle=0
+let vundle_readme=expand("~/.vim/bundle/vundle/README.md")
+if !filereadable(vundle_readme)
+	echo "Installing Vundle"
+	echo ""
+	silent !mkdir -p ~/.vim/bundle
+	silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
+	let DoINeedVundle=0
+endif
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'gmarik/vundle'
@@ -38,6 +47,13 @@ Bundle 'tpope/vim-fugitive'
 
 Bundle 'terryma/vim-multiple-cursors'
 
+Bundle 'uguu-org/vim-matrix-screensaver'
+
+if DoINeedVundle == 0
+	echo "Installing bundles, ignore key map error messages"
+	echo ""
+	:BundleInstall
+endif
 
 set laststatus=2
 

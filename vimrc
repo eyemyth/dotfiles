@@ -8,7 +8,7 @@ set backspace=2
 set background=dark
 
 " Vundle setup
-let DoINeedVundle=0
+let DoINeedVundle=1
 let vundle_readme=expand("~/.vim/bundle/vundle/README.md")
 if !filereadable(vundle_readme)
 	echo "Installing Vundle"

@@ -2,7 +2,6 @@ set nocompatible
 set term=builtin_ansi
 let &t_Co=256
 set encoding=utf-8
-syntax on
 set backspace=2
 
 set background=dark
@@ -62,3 +61,4 @@ let g:ycm_key_select_completion = '<F5>'
 set foldmethod=indent
 set foldlevel=99
 filetype plugin indent on
+syntax on

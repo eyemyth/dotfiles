@@ -20,6 +20,7 @@ if !filereadable(vundle_readme)
 	silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
 	let DoINeedVundle=0
 endif
+
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'gmarik/vundle'
@@ -27,42 +28,25 @@ Bundle 'gmarik/vundle'
 Bundle 'SirVer/ultisnips'
 Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'tomtom/tlib_vim'
-
 Bundle 'myusuf3/numbers.vim'
-
 Bundle 'vim-scripts/The-NERD-tree'
-
 Bundle 'tpope/vim-surround'
-
 Bundle 'mitechie/pyflakes-pathogen'
 Bundle 'fs111/pydoc.vim'
 Bundle 'vim-scripts/pep8'
 Bundle 'sontek/rope-vim'
-
 Bundle 'Lokaltog/vim-easymotion'
-
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
-
 Bundle 'airblade/vim-gitgutter'
-
 Bundle 'Lokaltog/vim-powerline'
-
 Bundle 'tpope/vim-fugitive'
-
 Bundle 'terryma/vim-multiple-cursors'
-
 Bundle 'uguu-org/vim-matrix-screensaver'
-
 Bundle 'rodjek/vim-puppet'
 Bundle 'godlygeek/tabular'
-
 Bundle 'kana/vim-arpeggio'
-
-" Causes issues with YouCompleteMe
-"Bundle 'Townk/vim-autoclose'
 Bundle 'Raimondi/delimitMate'
-
 Bundle 'Yggdroot/indentLine'
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
@@ -97,6 +81,7 @@ if DoINeedVundle == 0
     echo "Installing bundles, ignore key map error messages"
     echo ""
     :BundleInstall
+endif
 
 cmap w!! %!sudo tee > /dev/null %
 

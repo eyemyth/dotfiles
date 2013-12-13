@@ -3,26 +3,22 @@ set term=builtin_ansi
 let &t_Co=256
 set encoding=utf-8
 set backspace=2
-
 set background=dark
 
-" Vundle setup
-let DoINeedVundle=1
-let vundle_readme=expand("~/.vim/bundle/vundle/README.md")
-if !filereadable(vundle_readme)
-	echo "Installing Vundle"
-	echo ""
-	silent !mkdir -p ~/.vim/bundle
-	silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-	let DoINeedVundle=0
-endif
+set smartindent
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'gmarik/vundle'
 
-Bundle 'garbas/vim-snipmate'
+"Bundle 'garbas/vim-snipmate'
+"Bundle 'honza/vim-snippets'
+
+Bundle 'SirVer/ultisnips'
 Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'honza/vim-snippets'
 Bundle 'tomtom/tlib_vim'
 
 Bundle 'myusuf3/numbers.vim'
@@ -38,6 +34,9 @@ Bundle 'sontek/rope-vim'
 
 Bundle 'Lokaltog/vim-easymotion'
 
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'scrooloose/syntastic'
+
 Bundle 'airblade/vim-gitgutter'
 
 Bundle 'Lokaltog/vim-powerline'
@@ -48,11 +47,38 @@ Bundle 'terryma/vim-multiple-cursors'
 
 Bundle 'uguu-org/vim-matrix-screensaver'
 
-if DoINeedVundle == 0
-	echo "Installing bundles, ignore key map error messages"
-	echo ""
-	:BundleInstall
-endif
+Bundle 'rodjek/vim-puppet'
+Bundle 'godlygeek/tabular'
+
+" Causes issues with YouCompleteMe
+"Bundle 'Townk/vim-autoclose'
+Bundle 'Raimondi/delimitMate'
+
+Bundle 'Yggdroot/indentLine'
+
+" UltiSnips completion function that tries to expand a snippet. If there's no
+" snippet for expanding, it checks for completion window and if it's
+" shown, selects first element. If there's no completion window it tries to
+" jump to next placeholder. If there's no placeholder it just returns TAB
+" key 
+function! g:UltiSnips_Complete()
+    call UltiSnips_ExpandSnippet()
+    if g:ulti_expand_res == 0
+        if pumvisible()
+            return "\<C-n>"
+        else
+            call UltiSnips_JumpForwards()
+            if g:ulti_jump_forwards_res == 0
+               return "\<TAB>"
+            endif
+        endif
+    endif
+    return ""
+endfunction
+
+au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsListSnippets="<c-e>"
 
 set laststatus=2
 

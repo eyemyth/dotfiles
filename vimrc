@@ -10,12 +10,19 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
+" Vundle setup
+let DoINeedVundle=1
+let vundle_readme=expand("~/.vim/bundle/vundle/README.md")
+if !filereadable(vundle_readme)
+	echo "Installing Vundle"
+	echo ""
+	silent !mkdir -p ~/.vim/bundle
+	silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
+	let DoINeedVundle=0
+endif
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'gmarik/vundle'
-
-"Bundle 'garbas/vim-snipmate'
-"Bundle 'honza/vim-snippets'
 
 Bundle 'SirVer/ultisnips'
 Bundle 'MarcWeber/vim-addon-mw-utils'
@@ -50,6 +57,8 @@ Bundle 'uguu-org/vim-matrix-screensaver'
 Bundle 'rodjek/vim-puppet'
 Bundle 'godlygeek/tabular'
 
+Bundle 'kana/vim-arpeggio'
+
 " Causes issues with YouCompleteMe
 "Bundle 'Townk/vim-autoclose'
 Bundle 'Raimondi/delimitMate'
@@ -83,6 +92,13 @@ let g:UltiSnipsListSnippets="<c-e>"
 set laststatus=2
 
 let g:ycm_key_select_completion = '<F5>'
+
+if DoINeedVundle == 0
+    echo "Installing bundles, ignore key map error messages"
+    echo ""
+    :BundleInstall
+
+cmap w!! %!sudo tee > /dev/null %
 
 set foldmethod=indent
 set foldlevel=99

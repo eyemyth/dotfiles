@@ -21,6 +21,8 @@ if !filereadable(vundle_readme)
 	let DoINeedVundle=0
 endif
 
+filetype off
+
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'gmarik/vundle'
@@ -48,6 +50,8 @@ Bundle 'godlygeek/tabular'
 Bundle 'kana/vim-arpeggio'
 Bundle 'Raimondi/delimitMate'
 Bundle 'Yggdroot/indentLine'
+
+filetype plugin indent on
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
 " snippet for expanding, it checks for completion window and if it's

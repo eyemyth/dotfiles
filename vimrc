@@ -50,8 +50,7 @@ Bundle 'godlygeek/tabular'
 Bundle 'kana/vim-arpeggio'
 Bundle 'Raimondi/delimitMate'
 Bundle 'Yggdroot/indentLine'
-
-filetype plugin indent on
+Bundle 'sjl/gundo.vim'
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
 " snippet for expanding, it checks for completion window and if it's
@@ -79,7 +78,7 @@ let g:UltiSnipsListSnippets="<c-e>"
 
 set laststatus=2
 
-let g:ycm_key_select_completion = '<F5>'
+"let g:ycm_key_select_completion = '<F5>'
 
 if DoINeedVundle == 0
     echo "Installing bundles, ignore key map error messages"

@@ -51,6 +51,8 @@ Bundle 'kana/vim-arpeggio'
 Bundle 'Raimondi/delimitMate'
 Bundle 'Yggdroot/indentLine'
 Bundle 'sjl/gundo.vim'
+Bundle 'tpope/vim-commentary'
+Bundle 'kien/ctrlp.vim'
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
 " snippet for expanding, it checks for completion window and if it's
@@ -75,6 +77,9 @@ endfunction
 au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsListSnippets="<c-e>"
+
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
 
 set laststatus=2
 

@@ -1,0 +1,64 @@
+# array
+snippet array "Array of items"
+<array>
+	${0}
+</array>
+endsnippet
+
+# data
+snippet data
+<data>
+	${1}
+</data>
+endsnippet
+
+# date
+snippet date
+<date>${1:YYYY}${2/.+/-/}${2:MM}${3/.+/-/}${3:DD}${4/.+/T/}${4:hh}${5/.+/:/}${5:mm}${6/.+/:/}${6:ss}${4/.+/Z/}</date>
+endsnippet
+
+# dict
+snippet dict
+<dict>
+	${0}
+</dict>
+endsnippet
+
+# false
+snippet f
+<false/>
+endsnippet
+
+# integer
+snippet int
+<integer>${1}</integer>
+endsnippet
+
+# key
+snippet key
+<key>${1}</key>
+endsnippet
+
+# plist
+snippet plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+${0}
+</plist>
+endsnippet
+
+# real
+snippet real
+<real>${1}</real>
+endsnippet
+
+# string
+snippet str
+<string>${1}</string>
+endsnippet
+
+# true
+snippet t
+<true/>
+endsnippet

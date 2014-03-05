@@ -53,6 +53,7 @@ Bundle 'Yggdroot/indentLine'
 Bundle 'sjl/gundo.vim'
 Bundle 'tpope/vim-commentary'
 Bundle 'kien/ctrlp.vim'
+Bundle 'juanpabloaj/ShowMarks'
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
 " snippet for expanding, it checks for completion window and if it's
@@ -81,6 +82,11 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips", "snippets"]
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+
+"Open NERDTree by default, close if it's the last buffer
+autocmd VimEnter * NERDTree
+autocmd VimEnter * wincmd p
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 set laststatus=2
 

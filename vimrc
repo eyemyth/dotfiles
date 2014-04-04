@@ -54,6 +54,7 @@ Bundle 'sjl/gundo.vim'
 Bundle 'tpope/vim-commentary'
 Bundle 'kien/ctrlp.vim'
 Bundle 'juanpabloaj/ShowMarks'
+Bundle 'tpope/vim-markdown'
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
 " snippet for expanding, it checks for completion window and if it's

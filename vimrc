@@ -28,6 +28,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'SirVer/ultisnips'
+Bundle 'honza/vim-snippets'
 Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'tomtom/tlib_vim'
 Bundle 'myusuf3/numbers.vim'
@@ -62,12 +63,12 @@ Bundle 'tpope/vim-markdown'
 " jump to next placeholder. If there's no placeholder it just returns TAB
 " key 
 function! g:UltiSnips_Complete()
-    call UltiSnips_ExpandSnippet()
+    call UltiSnips#ExpandSnippet()
     if g:ulti_expand_res == 0
         if pumvisible()
             return "\<C-n>"
         else
-            call UltiSnips_JumpForwards()
+            call UltiSnips#JumpForwards()
             if g:ulti_jump_forwards_res == 0
                return "\<TAB>"
             endif
@@ -79,7 +80,7 @@ endfunction
 au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsListSnippets="<c-e>"
-let g:UltiSnipsSnippetDirectories=["UltiSnips", "snippets"]
+let g:UltiSnipsSnippetDirectories=["UltiSnips", "usnippets"] 
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'

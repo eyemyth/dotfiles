@@ -31,7 +31,7 @@ Bundle 'SirVer/ultisnips'
 Bundle 'honza/vim-snippets'
 Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'tomtom/tlib_vim'
-Bundle 'myusuf3/numbers.vim'
+"Bundle 'myusuf3/numbers.vim'
 Bundle 'vim-scripts/The-NERD-tree'
 Bundle 'tpope/vim-surround'
 Bundle 'mitechie/pyflakes-pathogen'
@@ -54,8 +54,9 @@ Bundle 'Yggdroot/indentLine'
 Bundle 'sjl/gundo.vim'
 Bundle 'tpope/vim-commentary'
 Bundle 'kien/ctrlp.vim'
-Bundle 'juanpabloaj/ShowMarks'
+"Bundle 'juanpabloaj/ShowMarks'
 Bundle 'tpope/vim-markdown'
+Bundle 'tmhedberg/SimpylFold'
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
 " snippet for expanding, it checks for completion window and if it's
@@ -102,7 +103,7 @@ endif
 
 cmap w!! %!sudo tee > /dev/null %
 
-set foldmethod=indent
+set foldmethod=syntax
 set foldlevel=99
 filetype plugin indent on
 syntax on

@@ -37,7 +37,8 @@ Bundle 'tpope/vim-surround'
 Bundle 'mitechie/pyflakes-pathogen'
 Bundle 'fs111/pydoc.vim'
 Bundle 'vim-scripts/pep8'
-Bundle 'sontek/rope-vim'
+"Bundle 'sontek/rope-vim'
+" FIND A REPLACEMENT FOR THIS
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
@@ -57,6 +58,8 @@ Bundle 'kien/ctrlp.vim'
 "Bundle 'juanpabloaj/ShowMarks'
 Bundle 'tpope/vim-markdown'
 Bundle 'tmhedberg/SimpylFold'
+Bundle 'kchmck/vim-coffee-script'
+
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
 " snippet for expanding, it checks for completion window and if it's

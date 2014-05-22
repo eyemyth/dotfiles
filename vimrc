@@ -10,6 +10,45 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
+" Show “invisible” characters
+set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
+set list
+
+" Stop showing syntax at 120 characters
+set synmaxcol=120
+
+" Highlight searches
+set hlsearch
+" Ignore case of searches
+set ignorecase
+" Highlight dynamically as pattern is typed
+set incsearch
+
+" Show the cursor position
+set ruler
+
+" Show the filename in the window titlebar
+set title
+
+" Use relative line numbers
+if exists("&relativenumber")
+    set relativenumber
+    au BufReadPost * set relativenumber
+endif
+
+" Start scrolling three lines before the horizontal window border
+set scrolloff=3
+
+" Enhance command-line completion
+set wildmenu
+
+" Centralize backups, swapfiles and undo history
+set backupdir=~/.vim/backups
+set directory=~/.vim/swaps
+if exists("&undodir")
+    set undodir=~/.vim/undo
+endif
+
 " Vundle setup
 let DoINeedVundle=1
 let vundle_readme=expand("~/.vim/bundle/vundle/README.md")
@@ -31,7 +70,6 @@ Bundle 'SirVer/ultisnips'
 Bundle 'honza/vim-snippets'
 Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'tomtom/tlib_vim'
-"Bundle 'myusuf3/numbers.vim'
 Bundle 'vim-scripts/The-NERD-tree'
 Bundle 'tpope/vim-surround'
 Bundle 'mitechie/pyflakes-pathogen'

@@ -4,6 +4,7 @@ let &t_Co=256
 set encoding=utf-8
 set backspace=2
 set background=dark
+set ttyfast
 
 set smartindent
 set tabstop=4
@@ -19,6 +20,8 @@ set synmaxcol=120
 
 " Highlight searches
 set hlsearch
+" Clear search highlighting with esc
+nnoremap <esc> :noh<return><esc>
 " Ignore case of searches
 set ignorecase
 " Highlight dynamically as pattern is typed
@@ -31,16 +34,22 @@ set ruler
 set title
 
 " Use relative line numbers
-if exists("&relativenumber")
-    set relativenumber
-    au BufReadPost * set relativenumber
-endif
+" if exists("&relativenumber")
+"     set relativenumber
+"     au BufReadPost * set relativenumber
+" endif
+
+" Assume html is django template
+au BufNewFile,BufRead *.html set filetype=htmldjango
 
 " Start scrolling three lines before the horizontal window border
 set scrolloff=3
 
 " Enhance command-line completion
 set wildmenu
+
+" Hide files in NERDTREE
+let NERDTreeIgnore = ['\.pyc$', '\.dmg$']
 
 " Centralize backups, swapfiles and undo history
 set backupdir=~/.vim/backups
@@ -60,6 +69,25 @@ if !filereadable(vundle_readme)
 	let DoINeedVundle=0
 endif
 
+" Enable bracketed paste mode
+if &term =~ "xterm.*"
+    let &t_ti = &t_ti . "\e[?2004h"
+    let &t_te = "\e[?2004l" . &t_te
+    function XTermPasteBegin(ret)
+        set pastetoggle=<Esc>[201~
+        set paste
+        return a:ret
+    endfunction
+    map <expr> <Esc>[200~ XTermPasteBegin("i")
+    imap <expr> <Esc>[200~ XTermPasteBegin("")
+    cmap <Esc>[200~ <nop>
+    cmap <Esc>[201~ <nop>
+endif
+
+" JSHint options
+let jshint2_save = 1
+let jshint2_read = 1
+
 filetype off
 
 set rtp+=~/.vim/bundle/vundle
@@ -75,6 +103,7 @@ Bundle 'tpope/vim-surround'
 Bundle 'mitechie/pyflakes-pathogen'
 Bundle 'fs111/pydoc.vim'
 Bundle 'vim-scripts/pep8'
+Bundle 'tell-k/vim-autopep8'
 "Bundle 'sontek/rope-vim'
 " FIND A REPLACEMENT FOR THIS
 Bundle 'Lokaltog/vim-easymotion'
@@ -97,6 +126,8 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'tpope/vim-markdown'
 Bundle 'tmhedberg/SimpylFold'
 Bundle 'kchmck/vim-coffee-script'
+Bundle 'Shutnik/jshint2.vim'
+Bundle 'vim-scripts/django.vim'
 
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
@@ -134,7 +165,13 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 
 set laststatus=2
 
+"Various YCM settings
 "let g:ycm_key_select_completion = '<F5>'
+"YouCompleteMe debug mode
+"run :YcmDebugInfo to find log files
+"let g:ycm_server_keep_logfiles = 1
+"let g:ycm_server_log_level = 'debug'
+let g:ycm_path_to_python_interpreter = '/usr/local/bin/python'
 
 if DoINeedVundle == 0
     echo "Installing bundles, ignore key map error messages"

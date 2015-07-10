@@ -1,5 +1,5 @@
 set nocompatible
-set term=builtin_ansi
+set term=xterm
 let &t_Co=256
 set encoding=utf-8
 set backspace=2
@@ -11,6 +11,9 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
+"TEMPORARY
+let g:pymode_rope = 0
+
 " Show “invisible” characters
 set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
 set list
@@ -20,8 +23,6 @@ set synmaxcol=120
 
 " Highlight searches
 set hlsearch
-" Clear search highlighting with esc
-nnoremap <esc> :noh<return><esc>
 " Ignore case of searches
 set ignorecase
 " Highlight dynamically as pattern is typed
@@ -44,6 +45,12 @@ au BufNewFile,BufRead *.html set filetype=htmldjango
 
 " Start scrolling three lines before the horizontal window border
 set scrolloff=3
+
+" Use + and - to resize splits
+if bufwinnr(1)
+  map + <C-W>>
+  map - <C-W><
+endif
 
 " Enhance command-line completion
 set wildmenu
@@ -69,20 +76,6 @@ if !filereadable(vundle_readme)
 	let DoINeedVundle=0
 endif
 
-" Enable bracketed paste mode
-if &term =~ "xterm.*"
-    let &t_ti = &t_ti . "\e[?2004h"
-    let &t_te = "\e[?2004l" . &t_te
-    function XTermPasteBegin(ret)
-        set pastetoggle=<Esc>[201~
-        set paste
-        return a:ret
-    endfunction
-    map <expr> <Esc>[200~ XTermPasteBegin("i")
-    imap <expr> <Esc>[200~ XTermPasteBegin("")
-    cmap <Esc>[200~ <nop>
-    cmap <Esc>[201~ <nop>
-endif
 
 " JSHint options
 let jshint2_save = 1
@@ -115,6 +108,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'uguu-org/vim-matrix-screensaver'
 Bundle 'rodjek/vim-puppet'
+Bundle 'puppetlabs/puppet-syntax-vim'
 Bundle 'godlygeek/tabular'
 Bundle 'kana/vim-arpeggio'
 Bundle 'Raimondi/delimitMate'
@@ -128,7 +122,21 @@ Bundle 'tmhedberg/SimpylFold'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'Shutnik/jshint2.vim'
 Bundle 'vim-scripts/django.vim'
+Bundle 'tommcdo/vim-lion'
+Bundle 'AndrewRadev/splitjoin.vim'
+Bundle 'Chiel92/vim-autoformat'
+Bundle 'junegunn/vim-easy-align'
+Bundle 'ConradIrwin/vim-bracketed-paste'
+Bundle 'luochen1990/rainbow'
+Bundle 'maksimr/vim-jsbeautify'
+Bundle 'klen/python-mode'
+Bundle 'tpope/vim-endwise'
 
+" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter> <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
 
 " UltiSnips completion function that tries to expand a snippet. If there's no
 " snippet for expanding, it checks for completion window and if it's
@@ -157,13 +165,59 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips", "usnippets"]
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_use_caching = 0
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor
+
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+else
+  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
+  let g:ctrlp_prompt_mappings = {
+    \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
+    \ }
+endif
 
 "Open NERDTree by default, close if it's the last buffer
 autocmd VimEnter * NERDTree
 autocmd VimEnter * wincmd p
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
+"Source vimrc on save
+autocmd! bufwritepost .vimrc source %
+
 set laststatus=2
+
+"Autopep8 settings
+let g:autopep8_max_line_length=79
+let g:autopep8_aggressive=1
+
+let g:rainbow_active = 1
+
+let g:rainbow_conf = {
+\   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+\   'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+\   'operators': '_,_',
+\   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+\   'separately': {
+\       '*': {},
+\       'tex': {
+\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+\       },
+\       'lisp': {
+\           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+\       },
+\       'vim': {
+\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+\       },
+\       'html': {
+\           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+\       },
+\       'htmldjango': {
+\           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold', 'start=/{%/ end=/%}/'],
+\       },
+\       'css': 0,
+\   }
+\}
 
 "Various YCM settings
 "let g:ycm_key_select_completion = '<F5>'
@@ -186,6 +240,40 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+
+"Make XML pretty with :PrettyXML
+function! DoPrettyXML()
+  " save the filetype so we can restore it later
+  let l:origft = &ft
+  set ft=
+  " delete the xml header if it exists. This will
+  " permit us to surround the document with fake tags
+  " without creating invalid xml.
+  1s/<?xml .*?>//e
+  " insert fake tags around the entire document.
+  " This will permit us to pretty-format excerpts of
+  " XML that may contain multiple top-level elements.
+  0put ='<PrettyXML>'
+  $put ='</PrettyXML>'
+  silent %!xmllint --format -
+  " xmllint will insert an <?xml?> header. it's easy enough to delete
+  " if you don't want it.
+  " delete the fake tags
+  2d
+  $d
+  " restore the 'normal' indentation, which is one extra level
+  " too deep due to the extra tags we wrapped around the document.
+  silent %<
+  " back to home
+  1
+  " restore the filetype
+  exe "set ft=" . l:origft
+endfunction
+command! PrettyXML call DoPrettyXML()
+
+"Python Mode settings
+:highlight ColorColumn ctermbg=234
+
 
 set foldmethod=syntax
 set foldlevel=99

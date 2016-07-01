@@ -5,21 +5,36 @@ set encoding=utf-8
 set backspace=2
 set background=dark
 set ttyfast
+set sidescroll=1
+set hidden
 
 set smartindent
 set tabstop=4
 set shiftwidth=4
 set expandtab
 
-"TEMPORARY
+
+set conceallevel=0
+
+let g:ycm_register_as_syntastic_checker = 0
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:pymode_lint_ignore = "E231,E501"
 let g:pymode_rope = 0
 
 " Show “invisible” characters
 set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
 set list
 
-" Stop showing syntax at 120 characters
-set synmaxcol=120
+nnoremap <right> :bn<enter>
+nnoremap <left> :bp<enter>
+
+" Stop showing syntax at x characters
+set synmaxcol=500
 
 " Highlight searches
 set hlsearch
@@ -34,14 +49,14 @@ set ruler
 " Show the filename in the window titlebar
 set title
 
-" Use relative line numbers
-" if exists("&relativenumber")
-"     set relativenumber
-"     au BufReadPost * set relativenumber
-" endif
+autocmd BufWritePre *.py,*.js,*.hs,*.html,*.css,*.scss :%s/\s\+$//e
 
 " Assume html is django template
-au BufNewFile,BufRead *.html set filetype=htmldjango
+" au BufNewFile,BufRead *.html set filetype=htmldjango
+" autocmd BufNewFile,BufRead *.rs abbreviate pl println!()
+
+" Override json ft stupidity
+au BufNewFile,BufRead *.json set filetype=javascript
 
 " Start scrolling three lines before the horizontal window border
 set scrolloff=3
@@ -55,8 +70,6 @@ endif
 " Enhance command-line completion
 set wildmenu
 
-" Hide files in NERDTREE
-let NERDTreeIgnore = ['\.pyc$', '\.dmg$']
 
 " Centralize backups, swapfiles and undo history
 set backupdir=~/.vim/backups
@@ -69,11 +82,11 @@ endif
 let DoINeedVundle=1
 let vundle_readme=expand("~/.vim/bundle/vundle/README.md")
 if !filereadable(vundle_readme)
-	echo "Installing Vundle"
-	echo ""
-	silent !mkdir -p ~/.vim/bundle
-	silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-	let DoINeedVundle=0
+    echo "Installing Vundle"
+    echo ""
+    silent !mkdir -p ~/.vim/bundle
+    silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
+    let DoINeedVundle=0
 endif
 
 
@@ -83,54 +96,57 @@ let jshint2_read = 1
 
 filetype off
 
+set rtp+=/usr/local/lib/python2.7/site-packages/powerline/bindings/vim
+
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'gmarik/vundle'
 
-Bundle 'SirVer/ultisnips'
-Bundle 'honza/vim-snippets'
+" Bundle 'SirVer/ultisnips'
+" Bundle 'honza/vim-snippets'
 Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'tomtom/tlib_vim'
-Bundle 'vim-scripts/The-NERD-tree'
 Bundle 'tpope/vim-surround'
-Bundle 'mitechie/pyflakes-pathogen'
-Bundle 'fs111/pydoc.vim'
-Bundle 'vim-scripts/pep8'
 Bundle 'tell-k/vim-autopep8'
-"Bundle 'sontek/rope-vim'
-" FIND A REPLACEMENT FOR THIS
-Bundle 'Lokaltog/vim-easymotion'
+Bundle 'easymotion/vim-easymotion'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
 Bundle 'airblade/vim-gitgutter'
-Bundle 'Lokaltog/vim-powerline'
+"Bundle 'Lokaltog/vim-powerline'
 Bundle 'tpope/vim-fugitive'
-Bundle 'terryma/vim-multiple-cursors'
-Bundle 'uguu-org/vim-matrix-screensaver'
-Bundle 'rodjek/vim-puppet'
-Bundle 'puppetlabs/puppet-syntax-vim'
+" Bundle 'terryma/vim-multiple-cursors'
+" Bundle 'rodjek/vim-puppet'
+" Bundle 'puppetlabs/puppet-syntax-vim'
 Bundle 'godlygeek/tabular'
-Bundle 'kana/vim-arpeggio'
+" Bundle 'kana/vim-arpeggio'
 Bundle 'Raimondi/delimitMate'
 Bundle 'Yggdroot/indentLine'
-Bundle 'sjl/gundo.vim'
+" Bundle 'sjl/gundo.vim'
 Bundle 'tpope/vim-commentary'
-Bundle 'kien/ctrlp.vim'
+Bundle 'ctrlpvim/ctrlp.vim'
 "Bundle 'juanpabloaj/ShowMarks'
 Bundle 'tpope/vim-markdown'
 Bundle 'tmhedberg/SimpylFold'
-Bundle 'kchmck/vim-coffee-script'
+" Bundle 'kchmck/vim-coffee-script'
 Bundle 'Shutnik/jshint2.vim'
 Bundle 'vim-scripts/django.vim'
-Bundle 'tommcdo/vim-lion'
-Bundle 'AndrewRadev/splitjoin.vim'
+" Bundle 'AndrewRadev/splitjoin.vim'
 Bundle 'Chiel92/vim-autoformat'
+" the following two do basically the same thing
 Bundle 'junegunn/vim-easy-align'
+Bundle 'tommcdo/vim-lion'
 Bundle 'ConradIrwin/vim-bracketed-paste'
 Bundle 'luochen1990/rainbow'
 Bundle 'maksimr/vim-jsbeautify'
 Bundle 'klen/python-mode'
 Bundle 'tpope/vim-endwise'
+Bundle 'vim-scripts/SyntaxRange'
+Bundle 'vim-scripts/ingo-library'
+Bundle 'edsono/vim-matchit'
+Bundle 'kiteco/plugins', {'rtp': 'vim-kite'}
+Bundle 'tpope/vim-unimpaired'
+Bundle 'wellle/targets.vim'
+Bundle 'tweekmonster/django-plus.vim'
 
 " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
 vmap <Enter> <Plug>(EasyAlign)
@@ -142,33 +158,39 @@ nmap ga <Plug>(EasyAlign)
 " snippet for expanding, it checks for completion window and if it's
 " shown, selects first element. If there's no completion window it tries to
 " jump to next placeholder. If there's no placeholder it just returns TAB
-" key 
-function! g:UltiSnips_Complete()
-    call UltiSnips#ExpandSnippet()
-    if g:ulti_expand_res == 0
-        if pumvisible()
-            return "\<C-n>"
-        else
-            call UltiSnips#JumpForwards()
-            if g:ulti_jump_forwards_res == 0
-               return "\<TAB>"
-            endif
-        endif
-    endif
-    return ""
-endfunction
+" key
+"
+" function! g:UltiSnips_Complete()
+"     call UltiSnips#ExpandSnippet()
+"     if g:ulti_expand_res == 0
+"         if pumvisible()
+"             return "\<C-n>"
+"         else
+"             call UltiSnips#JumpForwards()
+"             if g:ulti_jump_forwards_res == 0
+"                return "\<TAB>"
+"             endif
+"         endif
+"     endif
+"     return ""
+" endfunction
 
-au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsListSnippets="<c-e>"
-let g:UltiSnipsSnippetDirectories=["UltiSnips", "usnippets"] 
+" au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
+" let g:UltiSnipsJumpForwardTrigger="<tab>"
+" let g:UltiSnipsListSnippets="<c-e>"
+" let g:UltiSnipsSnippetDirectories=["UltiSnips", "usnippets"]
 
+"easymotion config
+map <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+
+"ctrl-p config
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_use_caching = 0
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_use_caching = 1
 if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor
-
     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 else
   let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
@@ -177,10 +199,11 @@ else
     \ }
 endif
 
-"Open NERDTree by default, close if it's the last buffer
-autocmd VimEnter * NERDTree
-autocmd VimEnter * wincmd p
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll|jpg|png|gif|pyc)$',
+  \ }
+
 
 "Source vimrc on save
 autocmd! bufwritepost .vimrc source %
@@ -190,6 +213,10 @@ set laststatus=2
 "Autopep8 settings
 let g:autopep8_max_line_length=79
 let g:autopep8_aggressive=1
+
+let g:formatdef_autopep8 = "'autopep8 --aggressive --max-line-length=79 -'"
+let g:formatters_python = ['autopep8']
+let g:autoformat_verbosemode=1
 
 let g:rainbow_active = 1
 
@@ -225,7 +252,9 @@ let g:rainbow_conf = {
 "run :YcmDebugInfo to find log files
 "let g:ycm_server_keep_logfiles = 1
 "let g:ycm_server_log_level = 'debug'
-let g:ycm_path_to_python_interpreter = '/usr/local/bin/python'
+let g:ycm_python_binary_path = 'python'
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 if DoINeedVundle == 0
     echo "Installing bundles, ignore key map error messages"
@@ -271,11 +300,44 @@ function! DoPrettyXML()
 endfunction
 command! PrettyXML call DoPrettyXML()
 
+function! HighlightRepeats() range
+  let lineCounts = {}
+  let lineNum = a:firstline
+  while lineNum <= a:lastline
+    let lineText = getline(lineNum)
+    if lineText != ""
+      let lineCounts[lineText] = (has_key(lineCounts, lineText) ? lineCounts[lineText] : 0) + 1
+    endif
+    let lineNum = lineNum + 1
+  endwhile
+  exe 'syn clear Repeat'
+  for lineText in keys(lineCounts)
+    if lineCounts[lineText] >= 2
+      exe 'syn match Repeat "^' . escape(lineText, '".\^$*[]') . '$"'
+    endif
+  endfor
+endfunction
+
+command! -range=% HighlightRepeats <line1>,<line2>call HighlightRepeats()
+
 "Python Mode settings
 :highlight ColorColumn ctermbg=234
 
+" Jump to first character or column
+noremap L $
+noremap <silent> H :call FirstCharOrFirstCol()<cr>
+
+function! FirstCharOrFirstCol()
+  let current_col = virtcol('.')
+  normal ^
+  let first_char = virtcol('.')
+  if current_col <= first_char
+    normal 0
+  endif
+endfunction
 
 set foldmethod=syntax
 set foldlevel=99
 filetype plugin indent on
+let python_highlight_all=1
 syntax on

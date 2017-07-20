@@ -3,6 +3,7 @@ set backspace=2
 set background=dark
 set sidescroll=1
 set hidden
+set mouse=
 
 set lazyredraw
 
@@ -11,6 +12,8 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
+let mapleader = "\<Space>"
+
 let g:python_host_prog = '/usr/local/bin/python'
 
 let g:airline_powerline_fonts = 1
@@ -18,16 +21,60 @@ let g:airline_theme='powerlineish'
 
 set conceallevel=0
 
+" // searches highlighted text in visual mode
+vnoremap // y/<C-R>"<CR>
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+autocmd! BufWritePost * Neomake
+let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501'], }
+let g:neomake_python_pep8_maker = { 'args': ['--ignore=E501'], }
+let g:neomake_python_pylama_maker = { 'args': ['--ignore=E501'], }
+let g:neomake_open_list = 2
 
 let g:pymode_lint_ignore = "E231,E501"
-let g:pymode_rope = 1
+let g:pymode_lint = 0
+let g:pymode_lint_on_write = 0
+let g:pymode_rope = 0
+let g:pymode_rope_rename_bind = '<leader>f'
+let g:pymode_rope_organize_imports_bind = '<C-c>ro'
 
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_tabs = 0
+
+" The Silver Searcher
+" if executable('ag')
+"   " Use ag over grep
+"   set grepprg=ag\ --nogroup\ --nocolor
+
+"   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+"   if exists("g:ctrlp_user_command")
+"       unlet g:ctrlp_user_command
+"   endif
+"   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+"   " ag is fast enough that CtrlP doesn't need to cache
+"   let g:ctrlp_use_caching = 0
+" endif
+
+" Use ag over grep
+set grepprg=ag\ --nogroup\ --nocolor
+
+" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+if exists("g:ctrlp_user_command")
+  unlet g:ctrlp_user_command
+endif
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+" ag is fast enough that CtrlP doesn't need to cache
+let g:ctrlp_use_caching = 0
+
+set wildignore+=*/node_modules/*
+
+" bind K to grep word under cursor
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+
+" bind \ (backward slash) to grep shortcut
+command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+nnoremap \ :Ag<SPACE>
 
 " Show “invisible” characters
 set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
@@ -52,14 +99,14 @@ set ruler
 " Show the filename in the window titlebar
 set title
 
-autocmd BufWritePre *.py,*.js,*.hs,*.html,*.css,*.scss :%s/\s\+$//e
-
-" Assume html is django template
-" au BufNewFile,BufRead *.html set filetype=htmldjango
-" autocmd BufNewFile,BufRead *.rs abbreviate pl println!()
+autocmd BufWritePre *.py,*.rb,*.js,*.hs,*.html,*.css,*.scss :%s/\s\+$//e
 
 " Override json ft stupidity
 au BufNewFile,BufRead *.json set filetype=javascript
+
+au BufNewFile,BufRead *.slide set nolist
+au BufNewFile,BufRead *.slide set laststatus=0
+au BufNewFile,BufRead *.slide let g:indentLine_enabled = 0
 
 " Start scrolling three lines before the horizontal window border
 set scrolloff=3
@@ -98,6 +145,9 @@ let jshint2_read = 1
 
 filetype off
 
+if has('nvim')
+    set inccommand=nosplit
+endif
 
 call plug#begin('~/.config/nvim/plugged')
 
@@ -107,7 +157,8 @@ Plug 'tpope/vim-surround'
 Plug 'tell-k/vim-autopep8'
 Plug 'easymotion/vim-easymotion'
 Plug 'Valloric/YouCompleteMe'
-Plug 'scrooloose/syntastic'
+" Plug 'scrooloose/syntastic'
+Plug 'neomake/neomake'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'godlygeek/tabular'
@@ -121,7 +172,7 @@ Plug 'vim-scripts/django.vim'
 Plug 'Chiel92/vim-autoformat'
 Plug 'junegunn/vim-easy-align'
 Plug 'tommcdo/vim-lion'
-Plug 'ConradIrwin/vim-bracketed-paste'
+" Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'luochen1990/rainbow'
 Plug 'maksimr/vim-jsbeautify'
 Plug 'klen/python-mode'
@@ -129,14 +180,33 @@ Plug 'tpope/vim-endwise'
 Plug 'vim-scripts/SyntaxRange'
 Plug 'vim-scripts/ingo-library'
 Plug 'edsono/vim-matchit'
-Plug 'kiteco/plugins', {'rtp': 'vim-kite'}
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 Plug 'tweekmonster/django-plus.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'ervandew/supertab'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'hecal3/vim-leader-guide'
+Plug 'google/vim-searchindex'
+Plug 'neovim/node-host', { 'do': 'npm install' }
+Plug 'vimlab/mdown.vim', { 'do': 'npm install' }
 
 call plug#end()
+
+" vim-sessions
+let g:sessions_project_path = "$HOME/code"
+
+" make YCM compatible with UltiSnips (using supertab)
+let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+let g:SuperTabDefaultCompletionType = '<C-n>'
+
+" better key bindings for UltiSnipsExpandTrigger
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
 vmap <Enter> <Plug>(EasyAlign)
@@ -148,20 +218,25 @@ nmap ga <Plug>(EasyAlign)
 map <Leader>L <Plug>(easymotion-bd-jk)
 nmap <Leader>L <Plug>(easymotion-overwin-line)
 
+map <Leader>v :vnew<CR>
+map <Leader>c :windo if &buftype == "quickfix" <bar><bar> &buftype == "locationlist" <bar> lclose <bar> endif<CR>:pclose<CR>:cclose<CR>
+
 "ctrl-p config
 let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
+" let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_use_caching = 1
-if executable('ag')
-    set grepprg=ag\ --nogroup\ --nocolor
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-else
-  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
-  let g:ctrlp_prompt_mappings = {
-    \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
-    \ }
-endif
+let g:ctrlp_switch_buffer = 'e'
+" let g:ctrlp_use_caching = 1
+
+" if executable('ag')
+"     set grepprg=ag\ --nogroup\ --nocolor
+"     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+" else
+"   let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
+"   let g:ctrlp_prompt_mappings = {
+"     \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
+"     \ }
+" endif
 
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(git|hg|svn)$',
@@ -181,6 +256,8 @@ let g:autopep8_aggressive=1
 let g:formatdef_autopep8 = "'autopep8 --aggressive --max-line-length=79 -'"
 let g:formatters_python = ['autopep8']
 let g:autoformat_verbosemode=1
+
+let g:formatdef_rbeautify = '"rbeautify -s -c 2"'
 
 let g:rainbow_active = 1
 

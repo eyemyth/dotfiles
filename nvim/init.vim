@@ -1,9 +1,9 @@
-let &t_Co=256
 set backspace=2
 set background=dark
 set sidescroll=1
 set hidden
 set mouse=
+set scrolloff=20
 
 set lazyredraw
 
@@ -14,7 +14,7 @@ set expandtab
 
 let mapleader = "\<Space>"
 
-let g:python_host_prog = '/usr/local/bin/python'
+let g:python_host_prog = '/usr/local/bin/python3'
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme='powerlineish'
@@ -40,6 +40,14 @@ let g:pymode_rope_organize_imports_bind = '<C-c>ro'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_tabs = 0
 
+let g:signify_vcs_list = [ 'git', ]
+let g:signify_sign_change = '~'
+
+highlight DiffAdd           cterm=bold ctermbg=none ctermfg=119
+highlight DiffDelete        cterm=bold ctermbg=none ctermfg=167
+highlight DiffChange        cterm=bold ctermbg=none ctermfg=227
+highlight SignColumn        ctermbg=none
+
 " The Silver Searcher
 " if executable('ag')
 "   " Use ag over grep
@@ -56,7 +64,7 @@ let g:airline#extensions#tabline#show_tabs = 0
 " endif
 
 " Use ag over grep
-set grepprg=ag\ --nogroup\ --nocolor
+set grepprg=ag\ --nogroup\ --nocolor\ --mmap
 
 " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
 if exists("g:ctrlp_user_command")
@@ -70,7 +78,7 @@ let g:ctrlp_use_caching = 0
 set wildignore+=*/node_modules/*
 
 " bind K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+" nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
 " bind \ (backward slash) to grep shortcut
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
@@ -82,6 +90,8 @@ set list
 
 nnoremap <right> :bn<enter>
 nnoremap <left> :bp<enter>
+
+nnoremap <Backspace> <Nop>
 
 " Stop showing syntax at x characters
 set synmaxcol=500
@@ -151,6 +161,16 @@ endif
 
 call plug#begin('~/.config/nvim/plugged')
 
+function! BuildComposer(info)
+  if a:info.status != 'unchanged' || a:info.force
+    if has('nvim')
+      !cargo build --release
+    else
+      !cargo build --release --no-default-features --features json-rpc
+    endif
+  endif
+endfunction
+
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
@@ -158,8 +178,10 @@ Plug 'tell-k/vim-autopep8'
 Plug 'easymotion/vim-easymotion'
 Plug 'Valloric/YouCompleteMe'
 " Plug 'scrooloose/syntastic'
+" Plug 'w0rp/ale'
 Plug 'neomake/neomake'
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
+Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
 Plug 'godlygeek/tabular'
 Plug 'Raimondi/delimitMate'
@@ -179,7 +201,7 @@ Plug 'klen/python-mode'
 Plug 'tpope/vim-endwise'
 Plug 'vim-scripts/SyntaxRange'
 Plug 'vim-scripts/ingo-library'
-Plug 'edsono/vim-matchit'
+Plug 'vim-scripts/matchit.zip'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
 Plug 'tweekmonster/django-plus.vim'
@@ -191,7 +213,8 @@ Plug 'honza/vim-snippets'
 Plug 'hecal3/vim-leader-guide'
 Plug 'google/vim-searchindex'
 Plug 'neovim/node-host', { 'do': 'npm install' }
-Plug 'vimlab/mdown.vim', { 'do': 'npm install' }
+Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
+Plug 'jiangmiao/auto-pairs'
 
 call plug#end()
 
@@ -295,7 +318,10 @@ let g:rainbow_conf = {
 "let g:ycm_server_log_level = 'debug'
 let g:ycm_python_binary_path = 'python'
 let g:ycm_register_as_syntastic_checker = 0
+let g:ycm_seed_identifiers_with_syntax = 1
+
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+let g:ycm_goto_buffer_command = 'vertical-split'
 
 if DoINeedVimPlug == 0
     echo "Installing bundles, ignore key map error messages"
@@ -310,11 +336,6 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
-
-" hack for https://github.com/neovim/neovim/issues/2048
-if has('nvim')
-    nmap <BS> <C-W>h
-endif
 
 "Make XML pretty with :PrettyXML
 function! DoPrettyXML()
@@ -387,3 +408,27 @@ set foldlevel=99
 filetype plugin indent on
 let python_highlight_all=1
 syntax on
+
+
+function! DeleteInactiveBufs()
+    "From tabpagebuflist() help, get a list of all buffers in all tabs
+    let tablist = []
+    for i in range(tabpagenr('$'))
+        call extend(tablist, tabpagebuflist(i + 1))
+    endfor
+
+    "Below originally inspired by Hara Krishna Dara and Keith Roberts
+    "http://tech.groups.yahoo.com/group/vim/message/56425
+    let nWipeouts = 0
+    for i in range(1, bufnr('$'))
+        if bufexists(i) && !getbufvar(i,"&mod") && index(tablist, i) == -1
+            "bufno exists AND isn't modified AND isn't in the list of buffers open in windows and tabs
+            silent exec 'bwipeout' i
+            let nWipeouts = nWipeouts + 1
+        endif
+    endfor
+    echomsg nWipeouts . ' buffer(s) wiped out'
+endfunction
+command! Bdi :call DeleteInactiveBufs()
+noremap <silent> H :call FirstCharOrFirstCol()<cr>
+map <Leader>d :call DeleteInactiveBufs()<cr>

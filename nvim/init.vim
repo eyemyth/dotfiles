@@ -14,6 +14,7 @@ set expandtab
 
 let mapleader = "\<Space>"
 
+let g:python3_host_prog = '/usr/local/bin/python3'
 let g:python_host_prog = '/usr/local/bin/python3'
 
 let g:airline_powerline_fonts = 1
@@ -24,13 +25,18 @@ set conceallevel=0
 " // searches highlighted text in visual mode
 vnoremap // y/<C-R>"<CR>
 
-autocmd! BufWritePost * Neomake
-let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501'], }
-let g:neomake_python_pep8_maker = { 'args': ['--ignore=E501'], }
-let g:neomake_python_pylama_maker = { 'args': ['--ignore=E501'], }
+" autocmd! BufWritePost * Neomake
+let g:neomake_python_enabled_makers = ['flake8', 'pylama']
+let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501,E712'], }
+let g:neomake_python_pep8_maker = { 'args': ['--ignore=E501,E712'], }
+let g:neomake_python_pylama_maker = { 'args': ['--ignore=E501,E712'], }
 let g:neomake_open_list = 2
 
-let g:pymode_lint_ignore = "E231,E501"
+let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+
+let g:neomake_rust_enabled_makers = ['cargo']
+
+let g:pymode_lint_ignore = "E231,E501,E712"
 let g:pymode_lint = 0
 let g:pymode_lint_on_write = 0
 let g:pymode_rope = 0
@@ -39,6 +45,9 @@ let g:pymode_rope_organize_imports_bind = '<C-c>ro'
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_tabs = 0
+let g:airline#extensions#tagbar#enabled = 1
+let g:airline#extensions#tagbar#flags = 'f'
+let g:airline_section_c = '%n: %f'
 
 let g:signify_vcs_list = [ 'git', ]
 let g:signify_sign_change = '~'
@@ -48,32 +57,25 @@ highlight DiffDelete        cterm=bold ctermbg=none ctermfg=167
 highlight DiffChange        cterm=bold ctermbg=none ctermfg=227
 highlight SignColumn        ctermbg=none
 
-" The Silver Searcher
-" if executable('ag')
-"   " Use ag over grep
-"   set grepprg=ag\ --nogroup\ --nocolor
-
-"   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-"   if exists("g:ctrlp_user_command")
-"       unlet g:ctrlp_user_command
-"   endif
-"   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-"   " ag is fast enough that CtrlP doesn't need to cache
-"   let g:ctrlp_use_caching = 0
-" endif
-
 " Use ag over grep
 set grepprg=ag\ --nogroup\ --nocolor\ --mmap
 
 " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-if exists("g:ctrlp_user_command")
-  unlet g:ctrlp_user_command
-endif
 let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 
 " ag is fast enough that CtrlP doesn't need to cache
 let g:ctrlp_use_caching = 0
+"
+"ctrl-p config
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_switch_buffer = 'e'
+" let g:ctrlp_use_caching = 1
+
+let g:ctrlp_custom_ignore = {
+            \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+            \ 'file': '\v\.(exe|so|dll|jpg|png|gif|pyc)$',
+            \ }
 
 set wildignore+=*/node_modules/*
 
@@ -81,7 +83,7 @@ set wildignore+=*/node_modules/*
 " nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
 " bind \ (backward slash) to grep shortcut
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 nnoremap \ :Ag<SPACE>
 
 " Show “invisible” characters
@@ -109,7 +111,9 @@ set ruler
 " Show the filename in the window titlebar
 set title
 
-autocmd BufWritePre *.py,*.rb,*.js,*.hs,*.html,*.css,*.scss :%s/\s\+$//e
+set titlestring=%t
+
+"autocmd BufWritePre *.py,*.rb,*.js,*.hs,*.html,*.css,*.scss :%s/\s\+$//e
 
 " Override json ft stupidity
 au BufNewFile,BufRead *.json set filetype=javascript
@@ -123,8 +127,8 @@ set scrolloff=3
 
 " Use + and - to resize splits
 if bufwinnr(1)
-  map + <C-W>>
-  map - <C-W><
+    map + <C-W>>
+    map - <C-W><
 endif
 
 " Enhance command-line completion
@@ -148,7 +152,6 @@ if !filereadable(vim_plug_readme)
     let DoINeedVimPlug=0
 endif
 
-
 " JSHint options
 let jshint2_save = 1
 let jshint2_read = 1
@@ -162,19 +165,19 @@ endif
 call plug#begin('~/.config/nvim/plugged')
 
 function! BuildComposer(info)
-  if a:info.status != 'unchanged' || a:info.force
-    if has('nvim')
-      !cargo build --release
-    else
-      !cargo build --release --no-default-features --features json-rpc
+    if a:info.status != 'unchanged' || a:info.force
+        if has('nvim')
+            !cargo build --release
+        else
+            !cargo build --release --no-default-features --features json-rpc
+        endif
     endif
-  endif
 endfunction
 
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
-Plug 'tell-k/vim-autopep8'
+" Plug 'tell-k/vim-autopep8'
 Plug 'easymotion/vim-easymotion'
 Plug 'Valloric/YouCompleteMe'
 " Plug 'scrooloose/syntastic'
@@ -215,8 +218,12 @@ Plug 'google/vim-searchindex'
 Plug 'neovim/node-host', { 'do': 'npm install' }
 Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
 Plug 'jiangmiao/auto-pairs'
+Plug 'majutsushi/tagbar'
+Plug 'tarekbecker/vim-yaml-formatter'
 
 call plug#end()
+
+call neomake#configure#automake('rw')
 
 " vim-sessions
 let g:sessions_project_path = "$HOME/code"
@@ -244,71 +251,59 @@ nmap <Leader>L <Plug>(easymotion-overwin-line)
 map <Leader>v :vnew<CR>
 map <Leader>c :windo if &buftype == "quickfix" <bar><bar> &buftype == "locationlist" <bar> lclose <bar> endif<CR>:pclose<CR>:cclose<CR>
 
-"ctrl-p config
-let g:ctrlp_map = '<c-p>'
-" let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_switch_buffer = 'e'
-" let g:ctrlp_use_caching = 1
-
-" if executable('ag')
-"     set grepprg=ag\ --nogroup\ --nocolor
-"     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-" else
-"   let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
-"   let g:ctrlp_prompt_mappings = {
-"     \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
-"     \ }
-" endif
-
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(exe|so|dll|jpg|png|gif|pyc)$',
-  \ }
+map <Leader>t :TagbarToggle<CR>
 
 
 "Source vimrc on save
-autocmd! bufwritepost init.vim source %
+autocmd! BufWritePost init.vim source %
 
 set laststatus=2
 
 "Autopep8 settings
-let g:autopep8_max_line_length=79
-let g:autopep8_aggressive=1
+" let g:autopep8_max_line_length=79
+" let g:autopep8_aggressive=0
+" let g:autopep8_on_save = 1
+" let g:autopep8_disable_show_diff=1
+" let g:autopep8_ignore="E712"
 
-let g:formatdef_autopep8 = "'autopep8 --aggressive --max-line-length=79 -'"
-let g:formatters_python = ['autopep8']
-let g:autoformat_verbosemode=1
+let g:formatdef_autopep8 = "'/usr/local/bin/autopep8 --max-line-length=79 -'"
+let g:formatters_python = ['yapf']
+let g:autoformat_verbosemode=0
+let g:autoformat_autoindent = 0
+let g:autoformat_retab = 0
+let g:autoformat_remove_trailing_spaces = 0
+
+au BufWrite * :Autoformat
 
 let g:formatdef_rbeautify = '"rbeautify -s -c 2"'
 
 let g:rainbow_active = 1
 
 let g:rainbow_conf = {
-\   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-\   'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
-\   'operators': '_,_',
-\   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
-\   'separately': {
-\       '*': {},
-\       'tex': {
-\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
-\       },
-\       'lisp': {
-\           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
-\       },
-\       'vim': {
-\           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
-\       },
-\       'html': {
-\           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
-\       },
-\       'htmldjango': {
-\           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold', 'start=/{%/ end=/%}/'],
-\       },
-\       'css': 0,
-\   }
-\}
+            \   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+            \   'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+            \   'operators': '_,_',
+            \   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+            \   'separately': {
+            \       '*': {},
+            \       'tex': {
+            \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+            \       },
+            \       'lisp': {
+            \           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+            \       },
+            \       'vim': {
+            \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+            \       },
+            \       'html': {
+            \           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+            \       },
+            \       'htmldjango': {
+            \           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold', 'start=/{%/ end=/%}/'],
+            \       },
+            \       'css': 0,
+            \   }
+            \}
 
 "Various YCM settings
 "let g:ycm_key_select_completion = '<F5>'
@@ -321,7 +316,7 @@ let g:ycm_register_as_syntastic_checker = 0
 let g:ycm_seed_identifiers_with_syntax = 1
 
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
-let g:ycm_goto_buffer_command = 'vertical-split'
+let g:ycm_goto_buffer_command = 'same-buffer'
 
 if DoINeedVimPlug == 0
     echo "Installing bundles, ignore key map error messages"
@@ -339,50 +334,50 @@ nnoremap <C-H> <C-W><C-H>
 
 "Make XML pretty with :PrettyXML
 function! DoPrettyXML()
-  " save the filetype so we can restore it later
-  let l:origft = &ft
-  set ft=
-  " delete the xml header if it exists. This will
-  " permit us to surround the document with fake tags
-  " without creating invalid xml.
-  1s/<?xml .*?>//e
-  " insert fake tags around the entire document.
-  " This will permit us to pretty-format excerpts of
-  " XML that may contain multiple top-level elements.
-  0put ='<PrettyXML>'
-  $put ='</PrettyXML>'
-  silent %!xmllint --format -
-  " xmllint will insert an <?xml?> header. it's easy enough to delete
-  " if you don't want it.
-  " delete the fake tags
-  2d
-  $d
-  " restore the 'normal' indentation, which is one extra level
-  " too deep due to the extra tags we wrapped around the document.
-  silent %<
-  " back to home
-  1
-  " restore the filetype
-  exe "set ft=" . l:origft
+    " save the filetype so we can restore it later
+    let l:origft = &ft
+    set ft=
+    " delete the xml header if it exists. This will
+    " permit us to surround the document with fake tags
+    " without creating invalid xml.
+    1s/<?xml .*?>//e
+    " insert fake tags around the entire document.
+    " This will permit us to pretty-format excerpts of
+    " XML that may contain multiple top-level elements.
+    0put ='<PrettyXML>'
+    $put ='</PrettyXML>'
+    silent %!xmllint --format -
+    " xmllint will insert an <?xml?> header. it's easy enough to delete
+    " if you don't want it.
+    " delete the fake tags
+    2d
+    $d
+    " restore the 'normal' indentation, which is one extra level
+    " too deep due to the extra tags we wrapped around the document.
+    silent %<
+    " back to home
+    1
+    " restore the filetype
+    exe "set ft=" . l:origft
 endfunction
 command! PrettyXML call DoPrettyXML()
 
 function! HighlightRepeats() range
-  let lineCounts = {}
-  let lineNum = a:firstline
-  while lineNum <= a:lastline
-    let lineText = getline(lineNum)
-    if lineText != ""
-      let lineCounts[lineText] = (has_key(lineCounts, lineText) ? lineCounts[lineText] : 0) + 1
-    endif
-    let lineNum = lineNum + 1
-  endwhile
-  exe 'syn clear Repeat'
-  for lineText in keys(lineCounts)
-    if lineCounts[lineText] >= 2
-      exe 'syn match Repeat "^' . escape(lineText, '".\^$*[]') . '$"'
-    endif
-  endfor
+    let lineCounts = {}
+    let lineNum = a:firstline
+    while lineNum <= a:lastline
+        let lineText = getline(lineNum)
+        if lineText != ""
+            let lineCounts[lineText] = (has_key(lineCounts, lineText) ? lineCounts[lineText] : 0) + 1
+        endif
+        let lineNum = lineNum + 1
+    endwhile
+    exe 'syn clear Repeat'
+    for lineText in keys(lineCounts)
+        if lineCounts[lineText] >= 2
+            exe 'syn match Repeat "^' . escape(lineText, '".\^$*[]') . '$"'
+        endif
+    endfor
 endfunction
 
 command! -range=% HighlightRepeats <line1>,<line2>call HighlightRepeats()
@@ -395,12 +390,12 @@ noremap L $
 noremap <silent> H :call FirstCharOrFirstCol()<cr>
 
 function! FirstCharOrFirstCol()
-  let current_col = virtcol('.')
-  normal ^
-  let first_char = virtcol('.')
-  if current_col <= first_char
-    normal 0
-  endif
+    let current_col = virtcol('.')
+    normal ^
+    let first_char = virtcol('.')
+    if current_col <= first_char
+        normal 0
+    endif
 endfunction
 
 set foldmethod=syntax
@@ -432,3 +427,6 @@ endfunction
 command! Bdi :call DeleteInactiveBufs()
 noremap <silent> H :call FirstCharOrFirstCol()<cr>
 map <Leader>d :call DeleteInactiveBufs()<cr>
+
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+autocmd FileType crontab setlocal nowritebackup

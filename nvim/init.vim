@@ -12,6 +12,8 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
+set colorcolumn=80
+
 let mapleader = "\<Space>"
 
 let g:python3_host_prog = '/usr/local/bin/python3'
@@ -30,18 +32,11 @@ let g:neomake_python_enabled_makers = ['flake8', 'pylama']
 let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501,E712'], }
 let g:neomake_python_pep8_maker = { 'args': ['--ignore=E501,E712'], }
 let g:neomake_python_pylama_maker = { 'args': ['--ignore=E501,E712'], }
-let g:neomake_open_list = 2
+let g:neomake_open_list = 0
 
 let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
 
 let g:neomake_rust_enabled_makers = ['cargo']
-
-let g:pymode_lint_ignore = "E231,E501,E712"
-let g:pymode_lint = 0
-let g:pymode_lint_on_write = 0
-let g:pymode_rope = 0
-let g:pymode_rope_rename_bind = '<leader>f'
-let g:pymode_rope_organize_imports_bind = '<C-c>ro'
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_tabs = 0
@@ -60,31 +55,20 @@ highlight SignColumn        ctermbg=none
 " Use ag over grep
 set grepprg=ag\ --nogroup\ --nocolor\ --mmap
 
-" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-" ag is fast enough that CtrlP doesn't need to cache
-let g:ctrlp_use_caching = 0
-"
-"ctrl-p config
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_switch_buffer = 'e'
-" let g:ctrlp_use_caching = 1
-
-let g:ctrlp_custom_ignore = {
-            \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-            \ 'file': '\v\.(exe|so|dll|jpg|png|gif|pyc)$',
-            \ }
-
 set wildignore+=*/node_modules/*
 
 " bind K to grep word under cursor
 " nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
 " bind \ (backward slash) to grep shortcut
-command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 nnoremap \ :Ag<SPACE>
+
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+nnoremap <C-P> :Files<cr>
+
+let g:fzf_buffers_jump = 0
 
 " Show “invisible” characters
 set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
@@ -179,18 +163,18 @@ Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
 " Plug 'tell-k/vim-autopep8'
 Plug 'easymotion/vim-easymotion'
-Plug 'Valloric/YouCompleteMe'
+" Plug 'Valloric/YouCompleteMe'
 " Plug 'scrooloose/syntastic'
 " Plug 'w0rp/ale'
 Plug 'neomake/neomake'
 " Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
-Plug 'godlygeek/tabular'
+" Plug 'godlygeek/tabular'
 Plug 'Raimondi/delimitMate'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-commentary'
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tmhedberg/SimpylFold'
 Plug 'Shutnik/jshint2.vim'
 Plug 'vim-scripts/django.vim'
@@ -200,8 +184,7 @@ Plug 'tommcdo/vim-lion'
 " Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'luochen1990/rainbow'
 Plug 'maksimr/vim-jsbeautify'
-Plug 'klen/python-mode'
-Plug 'tpope/vim-endwise'
+" Plug 'tpope/vim-endwise'
 Plug 'vim-scripts/SyntaxRange'
 Plug 'vim-scripts/ingo-library'
 Plug 'vim-scripts/matchit.zip'
@@ -210,7 +193,7 @@ Plug 'wellle/targets.vim'
 Plug 'tweekmonster/django-plus.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'ervandew/supertab'
+" Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'hecal3/vim-leader-guide'
@@ -220,8 +203,34 @@ Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
 Plug 'jiangmiao/auto-pairs'
 Plug 'majutsushi/tagbar'
 Plug 'tarekbecker/vim-yaml-formatter'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
 
 call plug#end()
+
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+    \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+    \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+    \ 'python': ['pyls'],
+    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
+    \ }
+
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+" Or map each action separately
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+
+let g:deoplete#enable_at_startup = 1
+
+inoremap <expr> <down> pumvisible() ? "\<C-n>" : "\<up>"
+inoremap <expr> <up> pumvisible() ? "\<C-p>" : "\<down>"
 
 call neomake#configure#automake('rw')
 
@@ -231,12 +240,12 @@ let g:sessions_project_path = "$HOME/code"
 " make YCM compatible with UltiSnips (using supertab)
 let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-let g:SuperTabDefaultCompletionType = '<C-n>'
+" let g:SuperTabDefaultCompletionType = '<C-n>'
 
 " better key bindings for UltiSnipsExpandTrigger
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+" let g:UltiSnipsExpandTrigger = "<tab>"
+" let g:UltiSnipsJumpForwardTrigger = "<tab>"
+" let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
 vmap <Enter> <Plug>(EasyAlign)

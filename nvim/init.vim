@@ -57,12 +57,10 @@ set grepprg=ag\ --nogroup\ --nocolor\ --mmap
 
 set wildignore+=*/node_modules/*
 
-" bind K to grep word under cursor
-" nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-
 " bind \ (backward slash) to grep shortcut
 nnoremap \ :Ag<SPACE>
 
+" FZF :Files with preview
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
@@ -94,7 +92,6 @@ set ruler
 
 " Show the filename in the window titlebar
 set title
-
 set titlestring=%t
 
 "autocmd BufWritePre *.py,*.rb,*.js,*.hs,*.html,*.css,*.scss :%s/\s\+$//e
@@ -102,6 +99,7 @@ set titlestring=%t
 " Override json ft stupidity
 au BufNewFile,BufRead *.json set filetype=javascript
 
+" hide stuff for presentations
 au BufNewFile,BufRead *.slide set nolist
 au BufNewFile,BufRead *.slide set laststatus=0
 au BufNewFile,BufRead *.slide let g:indentLine_enabled = 0
@@ -117,7 +115,6 @@ endif
 
 " Enhance command-line completion
 set wildmenu
-
 
 " Centralize backups, swapfiles and undo history
 set backupdir=~/.config/nvim/backups
@@ -161,30 +158,21 @@ endfunction
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
-" Plug 'tell-k/vim-autopep8'
 Plug 'easymotion/vim-easymotion'
-" Plug 'Valloric/YouCompleteMe'
-" Plug 'scrooloose/syntastic'
-" Plug 'w0rp/ale'
 Plug 'neomake/neomake'
-" Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
-" Plug 'godlygeek/tabular'
 Plug 'Raimondi/delimitMate'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-commentary'
-" Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tmhedberg/SimpylFold'
 Plug 'Shutnik/jshint2.vim'
 Plug 'vim-scripts/django.vim'
 Plug 'Chiel92/vim-autoformat'
 Plug 'junegunn/vim-easy-align'
 Plug 'tommcdo/vim-lion'
-" Plug 'ConradIrwin/vim-bracketed-paste'
 Plug 'luochen1990/rainbow'
 Plug 'maksimr/vim-jsbeautify'
-" Plug 'tpope/vim-endwise'
 Plug 'vim-scripts/SyntaxRange'
 Plug 'vim-scripts/ingo-library'
 Plug 'vim-scripts/matchit.zip'
@@ -193,7 +181,6 @@ Plug 'wellle/targets.vim'
 Plug 'tweekmonster/django-plus.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'hecal3/vim-leader-guide'
@@ -229,23 +216,11 @@ nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 let g:deoplete#enable_at_startup = 1
 
+" arrows for autocomplete list
 inoremap <expr> <down> pumvisible() ? "\<C-n>" : "\<up>"
 inoremap <expr> <up> pumvisible() ? "\<C-p>" : "\<down>"
 
 call neomake#configure#automake('rw')
-
-" vim-sessions
-let g:sessions_project_path = "$HOME/code"
-
-" make YCM compatible with UltiSnips (using supertab)
-let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-" let g:SuperTabDefaultCompletionType = '<C-n>'
-
-" better key bindings for UltiSnipsExpandTrigger
-" let g:UltiSnipsExpandTrigger = "<tab>"
-" let g:UltiSnipsJumpForwardTrigger = "<tab>"
-" let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
 vmap <Enter> <Plug>(EasyAlign)
@@ -254,26 +229,18 @@ vmap <Enter> <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 "easymotion config
-map <Leader>L <Plug>(easymotion-bd-jk)
-nmap <Leader>L <Plug>(easymotion-overwin-line)
+map <Leader>l <Plug>(easymotion-bd-jk)
+nmap <Leader>l <Plug>(easymotion-overwin-line)
 
 map <Leader>v :vnew<CR>
 map <Leader>c :windo if &buftype == "quickfix" <bar><bar> &buftype == "locationlist" <bar> lclose <bar> endif<CR>:pclose<CR>:cclose<CR>
 
 map <Leader>t :TagbarToggle<CR>
 
-
 "Source vimrc on save
 autocmd! BufWritePost init.vim source %
 
 set laststatus=2
-
-"Autopep8 settings
-" let g:autopep8_max_line_length=79
-" let g:autopep8_aggressive=0
-" let g:autopep8_on_save = 1
-" let g:autopep8_disable_show_diff=1
-" let g:autopep8_ignore="E712"
 
 let g:formatdef_autopep8 = "'/usr/local/bin/autopep8 --max-line-length=79 -'"
 let g:formatters_python = ['yapf']
@@ -287,7 +254,6 @@ au BufWrite * :Autoformat
 let g:formatdef_rbeautify = '"rbeautify -s -c 2"'
 
 let g:rainbow_active = 1
-
 let g:rainbow_conf = {
             \   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
             \   'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
@@ -313,19 +279,6 @@ let g:rainbow_conf = {
             \       'css': 0,
             \   }
             \}
-
-"Various YCM settings
-"let g:ycm_key_select_completion = '<F5>'
-"YouCompleteMe debug mode
-"run :YcmDebugInfo to find log files
-"let g:ycm_server_keep_logfiles = 1
-"let g:ycm_server_log_level = 'debug'
-let g:ycm_python_binary_path = 'python'
-let g:ycm_register_as_syntastic_checker = 0
-let g:ycm_seed_identifiers_with_syntax = 1
-
-map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
-let g:ycm_goto_buffer_command = 'same-buffer'
 
 if DoINeedVimPlug == 0
     echo "Installing bundles, ignore key map error messages"
@@ -371,6 +324,7 @@ function! DoPrettyXML()
 endfunction
 command! PrettyXML call DoPrettyXML()
 
+" find duplicate lines
 function! HighlightRepeats() range
     let lineCounts = {}
     let lineNum = a:firstline
@@ -391,10 +345,7 @@ endfunction
 
 command! -range=% HighlightRepeats <line1>,<line2>call HighlightRepeats()
 
-"Python Mode settings
-:highlight ColorColumn ctermbg=234
-
-" Jump to first character or column
+" Easier/better ^/$
 noremap L $
 noremap <silent> H :call FirstCharOrFirstCol()<cr>
 
@@ -412,7 +363,6 @@ set foldlevel=99
 filetype plugin indent on
 let python_highlight_all=1
 syntax on
-
 
 function! DeleteInactiveBufs()
     "From tabpagebuflist() help, get a list of all buffers in all tabs

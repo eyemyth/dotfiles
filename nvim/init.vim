@@ -13,11 +13,12 @@ set shiftwidth=4
 set expandtab
 
 set colorcolumn=80
+:highlight ColorColumn ctermbg=234
 
 let mapleader = "\<Space>"
 
 let g:python3_host_prog = '/usr/local/bin/python3'
-let g:python_host_prog = '/usr/local/bin/python3'
+let g:python_host_prog = '/usr/local/bin/python'
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme='powerlineish'
@@ -197,6 +198,11 @@ Plug 'autozimu/LanguageClient-neovim', {
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'lifepillar/pgsql.vim'
+Plug 'rust-lang/rust.vim'
+Plug 'racer-rust/vim-racer'
+Plug 'pangloss/vim-javascript'
+Plug 'maxmellon/vim-jsx-pretty'
 
 call plug#end()
 
@@ -206,13 +212,21 @@ let g:LanguageClient_serverCommands = {
     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
     \ 'python': ['pyls'],
     \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
+    \ 'cpp': ['cquery', '--log-file=/tmp/cq.log'],
+    \ 'c': ['cquery', '--log-file=/tmp/cq.log'],
     \ }
+
+let g:rustfmt_autosave = 1
 
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 " Or map each action separately
 nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+
+let g:LanguageClient_settingsPath = '/Users/jay_thompson/.config/nvim/settings.json'
+set completefunc=LanguageClient#complete
+set formatexpr=LanguageClient_textDocument_rangeFormatting()
 
 let g:deoplete#enable_at_startup = 1
 
@@ -221,6 +235,8 @@ inoremap <expr> <down> pumvisible() ? "\<C-n>" : "\<up>"
 inoremap <expr> <up> pumvisible() ? "\<C-p>" : "\<down>"
 
 call neomake#configure#automake('rw')
+
+let g:sql_type_default = 'pgsql'
 
 " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
 vmap <Enter> <Plug>(EasyAlign)

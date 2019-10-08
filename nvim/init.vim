@@ -260,10 +260,10 @@ set laststatus=2
 
 let g:formatdef_autopep8 = "'/usr/local/bin/autopep8 --max-line-length=79 -'"
 let g:formatters_python = ['yapf']
-let g:autoformat_verbosemode=0
+let g:autoformat_verbosemode = 0
 let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
-let g:autoformat_remove_trailing_spaces = 0
+let g:autoformat_remove_trailing_spaces = 1
 
 au BufWrite * :Autoformat
 

@@ -5,17 +5,74 @@ set hidden
 set mouse=
 set scrolloff=20
 
-set lazyredraw
+set cmdheight=2
+set updatetime=300
+set signcolumn=yes
 
 set smartindent
-set tabstop=4
 set shiftwidth=4
 set expandtab
+
+" quickly enter command mode
+set timeoutlen=1000
+set ttimeoutlen=0
+
+cabbrev bd <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD' : 'bdelete')<CR>
 
 set colorcolumn=80
 :highlight ColorColumn ctermbg=234
 
 let mapleader = "\<Space>"
+
+filetype plugin indent on
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" :OR organizes imports
+command! -nargs=0 OR  :call CocAction('runCommand', 'editor.action.organizeImport')
+
+" Show yank list with leader-y
+nnoremap <silent> <Leader>y  :<C-u>CocList -A --normal yank<cr>
+
+" Show errors list with leader-e
+nnoremap <silent> <Leader>e  :<C-u>CocList -A --normal diagnostics<cr>
+
+nmap <silent> <leader>a <Plug>(coc-diagnostic-next-error)
+nmap <silent> <leader>A <Plug>(coc-diagnostic-next)
+
+"Remove all trailing whitespace
+nnoremap <leader>w :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+
+" Always remove whitespace-only lines at the bottom
+au BufWrite * silent! :%s#\($\n\s*\)\+\%$##
+
+" Unlist empty buffers as they are created
+au BufEnter * if empty(&ft) | set nobuflisted | set ft=useless | endif
+
+let g:pandoc#syntax#conceal#use = 0
 
 let g:python3_host_prog = '/usr/local/bin/python3'
 let g:python_host_prog = '/usr/local/bin/python'
@@ -27,17 +84,6 @@ set conceallevel=0
 
 " // searches highlighted text in visual mode
 vnoremap // y/<C-R>"<CR>
-
-" autocmd! BufWritePost * Neomake
-let g:neomake_python_enabled_makers = ['flake8', 'pylama']
-let g:neomake_python_flake8_maker = { 'args': ['--ignore=E501,E712'], }
-let g:neomake_python_pep8_maker = { 'args': ['--ignore=E501,E712'], }
-let g:neomake_python_pylama_maker = { 'args': ['--ignore=E501,E712'], }
-let g:neomake_open_list = 0
-
-let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
-
-let g:neomake_rust_enabled_makers = ['cargo']
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_tabs = 0
@@ -60,6 +106,8 @@ set wildignore+=*/node_modules/*
 
 " bind \ (backward slash) to grep shortcut
 nnoremap \ :Ag<SPACE>
+
+let FZF_DEFAULT_COMMAND='ag -g --path-to-ignore ~/.gitignore_global ""'
 
 " FZF :Files with preview
 command! -bang -nargs=? -complete=dir Files
@@ -94,11 +142,6 @@ set ruler
 " Show the filename in the window titlebar
 set title
 set titlestring=%t
-
-"autocmd BufWritePre *.py,*.rb,*.js,*.hs,*.html,*.css,*.scss :%s/\s\+$//e
-
-" Override json ft stupidity
-au BufNewFile,BufRead *.json set filetype=javascript
 
 " hide stuff for presentations
 au BufNewFile,BufRead *.slide set nolist
@@ -138,8 +181,6 @@ endif
 let jshint2_save = 1
 let jshint2_read = 1
 
-filetype off
-
 if has('nvim')
     set inccommand=nosplit
 endif
@@ -160,21 +201,21 @@ Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
 Plug 'easymotion/vim-easymotion'
-Plug 'neomake/neomake'
+" Plug 'neomake/neomake'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
 Plug 'Raimondi/delimitMate'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-commentary'
 Plug 'tmhedberg/SimpylFold'
-Plug 'Shutnik/jshint2.vim'
+" Plug 'Shutnik/jshint2.vim'
 Plug 'vim-scripts/django.vim'
 Plug 'Chiel92/vim-autoformat'
 Plug 'junegunn/vim-easy-align'
 Plug 'tommcdo/vim-lion'
 Plug 'luochen1990/rainbow'
-Plug 'maksimr/vim-jsbeautify'
-Plug 'vim-scripts/SyntaxRange'
+" Plug 'maksimr/vim-jsbeautify'
+" Plug 'vim-scripts/SyntaxRange'
 Plug 'vim-scripts/ingo-library'
 Plug 'vim-scripts/matchit.zip'
 Plug 'tpope/vim-unimpaired'
@@ -190,51 +231,45 @@ Plug 'neovim/node-host', { 'do': 'npm install' }
 Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
 Plug 'jiangmiao/auto-pairs'
 Plug 'majutsushi/tagbar'
-Plug 'tarekbecker/vim-yaml-formatter'
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'lifepillar/pgsql.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'racer-rust/vim-racer'
-Plug 'pangloss/vim-javascript'
+" Plug 'pangloss/vim-javascript'
 Plug 'maxmellon/vim-jsx-pretty'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'qpkorr/vim-bufkill'
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax'
 
 call plug#end()
 
-let g:LanguageClient_serverCommands = {
-    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-    \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
-    \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-    \ 'python': ['pyls'],
-    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
-    \ 'cpp': ['cquery', '--log-file=/tmp/cq.log'],
-    \ 'c': ['cquery', '--log-file=/tmp/cq.log'],
-    \ }
+let coc_global_extensions = ['coc-lists', 'coc-yaml', 'coc-snippets', 'coc-html', 'coc-yank', 'coc-python', 'coc-json', 'coc-syntax', 'coc-tag', 'coc-tsserver', 'coc-css']
+
+" let g:LanguageClient_serverCommands = {
+"     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+"     \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+"     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+"     \ 'python': ['pyls'],
+"     \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
+"     \ 'cpp': ['cquery', '--log-file=/tmp/cq.log'],
+"     \ 'c': ['cquery', '--log-file=/tmp/cq.log'],
+"     \ }
 
 let g:rustfmt_autosave = 1
 
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-" Or map each action separately
-nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-
-let g:LanguageClient_settingsPath = '/Users/jay_thompson/.config/nvim/settings.json'
-set completefunc=LanguageClient#complete
-set formatexpr=LanguageClient_textDocument_rangeFormatting()
-
-let g:deoplete#enable_at_startup = 1
+" nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+" " Or map each action separately
+" nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+" nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+" nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 " arrows for autocomplete list
 inoremap <expr> <down> pumvisible() ? "\<C-n>" : "\<up>"
 inoremap <expr> <up> pumvisible() ? "\<C-p>" : "\<down>"
 
-call neomake#configure#automake('rw')
+" call neomake#configure#automake('rw')
 
 let g:sql_type_default = 'pgsql'
 
@@ -265,7 +300,8 @@ let g:autoformat_autoindent = 0
 let g:autoformat_retab = 0
 let g:autoformat_remove_trailing_spaces = 1
 
-au BufWrite * :Autoformat
+" au BufWrite * :Autoformat
+au BufWrite * silent! :call CocAction('format')
 
 let g:formatdef_rbeautify = '"rbeautify -s -c 2"'
 
@@ -376,7 +412,6 @@ endfunction
 
 set foldmethod=syntax
 set foldlevel=99
-filetype plugin indent on
 let python_highlight_all=1
 syntax on
 
@@ -400,8 +435,9 @@ function! DeleteInactiveBufs()
     echomsg nWipeouts . ' buffer(s) wiped out'
 endfunction
 command! Bdi :call DeleteInactiveBufs()
-noremap <silent> H :call FirstCharOrFirstCol()<cr>
 map <Leader>d :call DeleteInactiveBufs()<cr>
+
+noremap <silent> H :call FirstCharOrFirstCol()<cr>
 
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType crontab setlocal nowritebackup

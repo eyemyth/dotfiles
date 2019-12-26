@@ -13,18 +13,24 @@ set smartindent
 set shiftwidth=4
 set expandtab
 
-" quickly enter command mode
+" quickly enter normal mode
 set timeoutlen=1000
 set ttimeoutlen=0
 
 cabbrev bd <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD' : 'bdelete')<CR>
+
+filetype plugin indent on
 
 set colorcolumn=80
 :highlight ColorColumn ctermbg=234
 
 let mapleader = "\<Space>"
 
-filetype plugin indent on
+" quick yank and paste system pasteboard register
+map <leader><leader>y "+y<CR>
+map <leader><leader>yy :norm "+yy<CR>
+map <leader><leader>p :norm "+p<CR>
+
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.

@@ -148,8 +148,8 @@ au BufNewFile,BufRead *.slide set nolist
 au BufNewFile,BufRead *.slide set laststatus=0
 au BufNewFile,BufRead *.slide let g:indentLine_enabled = 0
 
-" Start scrolling three lines before the horizontal window border
-set scrolloff=3
+" Start scrolling 10 lines before the horizontal window border
+set scrolloff=10
 
 " Use + and - to resize splits
 if bufwinnr(1)

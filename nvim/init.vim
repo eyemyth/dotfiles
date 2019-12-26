@@ -107,7 +107,7 @@ set wildignore+=*/node_modules/*
 " bind \ (backward slash) to grep shortcut
 nnoremap \ :Ag<SPACE>
 
-let FZF_DEFAULT_COMMAND='ag -g --path-to-ignore ~/.gitignore_global ""'
+let $FZF_DEFAULT_COMMAND='ag --path-to-ignore ~/.ignore -g ""'
 
 " FZF :Files with preview
 command! -bang -nargs=? -complete=dir Files

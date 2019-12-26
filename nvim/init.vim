@@ -17,6 +17,21 @@ set expandtab
 set timeoutlen=1000
 set ttimeoutlen=0
 
+"Turn on backup option
+set backup
+
+"Where to store backups
+set backupdir=$XDG_DATA_HOME/nvim/backup
+
+"Make backup before overwriting the current buffer
+set writebackup
+
+"Keep original backup file
+set backupcopy=no
+
+"Meaningful backup name, ex: filename@2015-04-05.14:59
+au BufWritePre * let &bex = '@' . strftime("%F.%H:%M")
+
 cabbrev bd <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'BD' : 'bdelete')<CR>
 
 filetype plugin indent on

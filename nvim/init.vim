@@ -67,7 +67,8 @@ nnoremap <leader>w :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 au BufWrite * silent! :%s#\($\n\s*\)\+\%$##
 
 " Unlist empty buffers as they are created
-au BufEnter * if empty(&ft) | set nobuflisted | set ft=useless | endif
+" TODO: make this work the way I want
+" au BufEnter * if empty(&ft) | set nobuflisted | set ft=useless | endif
 
 let g:pandoc#syntax#conceal#use = 0
 

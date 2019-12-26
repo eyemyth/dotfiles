@@ -239,8 +239,10 @@ Plug 'vim-pandoc/vim-pandoc-syntax'
 
 call plug#end()
 
-let coc_global_extensions = ['coc-lists', 'coc-yaml', 'coc-snippets', 'coc-html', 'coc-yank', 'coc-python', 'coc-json', 'coc-syntax', 'coc-tag', 'coc-tsserver', 'coc-css']
 
+let coc_global_extensions = [
+            \'coc-python', 'coc-json', 'coc-syntax', 'coc-tag', 'coc-tsserver',
+            \'coc-tslint-plugin', 'coc-css', 'coc-highlight', 'coc-tabnine']
 
 
 

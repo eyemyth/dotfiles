@@ -200,22 +200,17 @@ endfunction
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-surround'
-Plug 'easymotion/vim-easymotion'
-" Plug 'neomake/neomake'
 Plug 'mhinz/vim-signify'
 Plug 'tpope/vim-fugitive'
 Plug 'Raimondi/delimitMate'
 Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-commentary'
 Plug 'tmhedberg/SimpylFold'
-" Plug 'Shutnik/jshint2.vim'
 Plug 'vim-scripts/django.vim'
 Plug 'Chiel92/vim-autoformat'
 Plug 'junegunn/vim-easy-align'
 Plug 'tommcdo/vim-lion'
 Plug 'luochen1990/rainbow'
-" Plug 'maksimr/vim-jsbeautify'
-" Plug 'vim-scripts/SyntaxRange'
 Plug 'vim-scripts/ingo-library'
 Plug 'vim-scripts/matchit.zip'
 Plug 'tpope/vim-unimpaired'
@@ -236,7 +231,6 @@ Plug 'junegunn/fzf.vim'
 Plug 'lifepillar/pgsql.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'racer-rust/vim-racer'
-" Plug 'pangloss/vim-javascript'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'qpkorr/vim-bufkill'
@@ -247,29 +241,13 @@ call plug#end()
 
 let coc_global_extensions = ['coc-lists', 'coc-yaml', 'coc-snippets', 'coc-html', 'coc-yank', 'coc-python', 'coc-json', 'coc-syntax', 'coc-tag', 'coc-tsserver', 'coc-css']
 
-" let g:LanguageClient_serverCommands = {
-"     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-"     \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
-"     \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-"     \ 'python': ['pyls'],
-"     \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
-"     \ 'cpp': ['cquery', '--log-file=/tmp/cq.log'],
-"     \ 'c': ['cquery', '--log-file=/tmp/cq.log'],
-"     \ }
 
-let g:rustfmt_autosave = 1
 
-" nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-" " Or map each action separately
-" nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-" nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-" nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 " arrows for autocomplete list
 inoremap <expr> <down> pumvisible() ? "\<C-n>" : "\<up>"
 inoremap <expr> <up> pumvisible() ? "\<C-p>" : "\<down>"
 
-" call neomake#configure#automake('rw')
 
 let g:sql_type_default = 'pgsql'
 
@@ -279,9 +257,6 @@ vmap <Enter> <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-"easymotion config
-map <Leader>l <Plug>(easymotion-bd-jk)
-nmap <Leader>l <Plug>(easymotion-overwin-line)
 
 map <Leader>v :vnew<CR>
 map <Leader>c :windo if &buftype == "quickfix" <bar><bar> &buftype == "locationlist" <bar> lclose <bar> endif<CR>:pclose<CR>:cclose<CR>

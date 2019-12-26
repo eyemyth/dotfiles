@@ -241,10 +241,12 @@ call plug#end()
 
 
 let coc_global_extensions = [
+            \'coc-lists', 'coc-yaml', 'coc-snippets', 'coc-html', 'coc-yank',
             \'coc-python', 'coc-json', 'coc-syntax', 'coc-tag', 'coc-tsserver',
             \'coc-tslint-plugin', 'coc-css', 'coc-highlight', 'coc-tabnine']
 
 
+let g:rustfmt_autosave = 1
 
 " arrows for autocomplete list
 inoremap <expr> <down> pumvisible() ? "\<C-n>" : "\<up>"

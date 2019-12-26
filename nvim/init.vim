@@ -78,16 +78,18 @@ let g:python_host_prog = '/usr/local/bin/python'
 let g:airline_powerline_fonts = 1
 let g:airline_theme='powerlineish'
 
-set conceallevel=0
-
-" // searches highlighted text in visual mode
-vnoremap // y/<C-R>"<CR>
-
+let g:airline#extensions#coc#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_tabs = 0
 let g:airline#extensions#tagbar#enabled = 1
 let g:airline#extensions#tagbar#flags = 'f'
 let g:airline_section_c = '%n: %f'
+
+set conceallevel=0
+
+" // searches highlighted text in visual mode
+vnoremap // y/<C-R>"<CR>
+
 
 let g:signify_vcs_list = [ 'git', ]
 let g:signify_sign_change = '~'

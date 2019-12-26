@@ -250,13 +250,13 @@ let coc_global_extensions = [
             \'coc-python', 'coc-json', 'coc-syntax', 'coc-tag', 'coc-tsserver',
             \'coc-tslint-plugin', 'coc-css', 'coc-highlight', 'coc-tabnine']
 
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 let g:rustfmt_autosave = 1
 
 " arrows for autocomplete list
 inoremap <expr> <down> pumvisible() ? "\<C-n>" : "\<up>"
 inoremap <expr> <up> pumvisible() ? "\<C-p>" : "\<down>"
-
 
 let g:sql_type_default = 'pgsql'
 
@@ -266,8 +266,23 @@ vmap <Enter> <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-
 map <Leader>v :vnew<CR>
+
+" TODO
+" function! CloseGarbage()
+"     :windo if &buftype == "nofile"
+"         :close
+"     endif
+"     :windo if &buftype == "quickfix"
+"         :lclose
+"     endif
+"     :windo &buftype == "locationlist" 
+"         :lclose
+"     endif
+"     :pclose
+"     :cclose
+" endfunction
+
 map <Leader>c :windo if &buftype == "quickfix" <bar><bar> &buftype == "locationlist" <bar> lclose <bar> endif<CR>:pclose<CR>:cclose<CR>
 
 map <Leader>t :TagbarToggle<CR>
@@ -421,7 +436,9 @@ endfunction
 command! Bdi :call DeleteInactiveBufs()
 map <Leader>d :call DeleteInactiveBufs()<cr>
 
-noremap <silent> H :call FirstCharOrFirstCol()<cr>
+map <Leader>z :bd<cr>
 
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType crontab setlocal nowritebackup
+autocmd FileType python let b:AutoPairs = AutoPairsDefine({"f'" : "'", "r'" : "'", "b'" : "'"})
+autocmd FileType sql setlocal syntax=off

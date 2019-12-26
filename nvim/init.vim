@@ -236,9 +236,12 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'qpkorr/vim-bufkill'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'liuchengxu/vista.vim'
 
 call plug#end()
 
+let g:vista#renderer#enable_icon = 1
+let g:vista_fzf_preview = ['right:50%']
 
 let coc_global_extensions = [
             \'coc-lists', 'coc-yaml', 'coc-snippets', 'coc-html', 'coc-yank',

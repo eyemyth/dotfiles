@@ -58,8 +58,7 @@ nnoremap <silent> <Leader>y  :<C-u>CocList -A --normal yank<cr>
 " Show errors list with leader-e
 nnoremap <silent> <Leader>e  :<C-u>CocList -A --normal diagnostics<cr>
 
-nmap <silent> <leader>a <Plug>(coc-diagnostic-next-error)
-nmap <silent> <leader>A <Plug>(coc-diagnostic-next)
+nmap <silent> <leader>a <Plug>(coc-diagnostic-next)
 
 "Remove all trailing whitespace
 nnoremap <leader>w :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>

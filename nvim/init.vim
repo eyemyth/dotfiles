@@ -236,6 +236,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'qpkorr/vim-bufkill'
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'lambdalisue/lista.nvim'
+Plug 'sheerun/vim-polyglot'
 Plug 'liuchengxu/vista.vim'
 
 call plug#end()

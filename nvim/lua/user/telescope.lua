@@ -10,7 +10,7 @@ telescope.setup {
 
     prompt_prefix = " ",
     selection_caret = " ",
-    path_display = { "smart" },
+    path_display = { "absolute" },
 
     mappings = {
       i = {
@@ -117,3 +117,4 @@ telescope.setup {
 
 telescope.load_extension('fzy_native')
 telescope.load_extension('ctags_outline')
+telescope.load_extension('zk')

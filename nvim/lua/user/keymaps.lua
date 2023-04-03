@@ -67,13 +67,17 @@ keymap("", "H", ":lua FirstCharOrFirstCol()<CR>", opts)
 keymap("n", "<leader>z", ":BD<CR>", opts)
 
 -- Telescope
-keymap("n", "<C-P>", "<cmd>lua require('telescope.builtin').git_files()<cr>", opts)
+keymap("n", "<C-P>", "<cmd>lua require('telescope.builtin').git_files({recurse_submodules = true})<cr>", opts)
 keymap("n", "<C-T>", "<cmd>lua require('telescope.builtin').tags()<cr>", opts)
+keymap("n", "\\", "<cmd>lua require('telescope.builtin').live_grep()<cr>", opts)
 
 -- LSP
 keymap("n", "gd", "v:lua vim.lsp.buf.definition()<CR>", opts)
 keymap("n", "gr", "v:lua vim.lsp.buf.references()<CR>", opts)
 keymap("n", "K", "v:lua vim.lsp.buf.hover()<CR>", opts)
+
+-- Notes
+keymap("n", "<leader>zn", "<cmd>lua require('zk.commands').get('ZkNew')({ dir = vim.env.ZKGROUP })<cr>", opts)
 
 -- Trouble
 -- vim.lsp.buf.formatting()

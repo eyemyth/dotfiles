@@ -81,7 +81,7 @@ lualine.setup({
         lualine_z = { progress },
     },
     inactive_sections = {
-        lualine_a = { "buffers" },
+        lualine_a = { { "filename", path = 1 }, diagnostics },
         lualine_b = {},
         lualine_c = { "filename" },
         lualine_x = { "location" },

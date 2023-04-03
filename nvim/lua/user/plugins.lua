@@ -48,10 +48,10 @@ return packer.startup(function(use)
     use("numToStr/Comment.nvim") -- Easily comment stuff
     use("kyazdani42/nvim-web-devicons")
     use("kyazdani42/nvim-tree.lua")
-    use("akinsho/bufferline.nvim")
     use("moll/vim-bbye")
     use("nvim-lualine/lualine.nvim")
-    use("akinsho/toggleterm.nvim")
+    use{'akinsho/toggleterm.nvim', branch = "main"}
+    use{'akinsho/bufferline.nvim', tag = "*", requires = 'kyazdani42/nvim-web-devicons'}
     use("ahmedkhalf/project.nvim")
     use("lewis6991/impatient.nvim")
     use("lukas-reineke/indent-blankline.nvim")
@@ -87,7 +87,10 @@ return packer.startup(function(use)
 
     -- LSP
     use("neovim/nvim-lspconfig") -- enable LSP
-    use("williamboman/nvim-lsp-installer") -- simple to use language server installer
+
+    use {"williamboman/mason.nvim"}
+    use {"williamboman/mason-lspconfig.nvim"}
+
     use("tamago324/nlsp-settings.nvim") -- language server settings defined in json for
     use("jose-elias-alvarez/null-ls.nvim") -- for formatters and linters
 
@@ -101,6 +104,7 @@ return packer.startup(function(use)
         requires = "kyazdani42/nvim-web-devicons",
         config = function()
             require("trouble").setup({
+                mode = "document_diagnostics",
                 -- your configuration comes here
                 -- or leave it empty to use the default settings
                 -- refer to the configuration section below
@@ -108,18 +112,39 @@ return packer.startup(function(use)
         end,
     })
 
+    -- use({
+    --   "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    --   config = function()
+    --     require("lsp_lines").register_lsp_virtual_lines()
+    --   end,
+    -- })
+
     use("fcying/telescope-ctags-outline.nvim")
 
-    -- Treesitter
     use({
         "nvim-treesitter/nvim-treesitter",
         run = ":TSUpdate",
     })
+
     use("JoosepAlviste/nvim-ts-context-commentstring")
 
     -- Git
-    -- use("lewis6991/gitsigns.nvim")
+    use("lewis6991/gitsigns.nvim")
     use("tpope/vim-fugitive")
+    use("sodapopcan/vim-twiggy")
+
+    -- Notes
+    use("mickael-menu/zk-nvim")
+
+    -- Python folding
+    use("tmhedberg/SimpylFold")
+
+    -- Open browser
+    use("tyru/open-browser.vim")
+
+    -- PlantUML
+    use("aklt/plantuml-syntax")
+    use("weirongxu/plantuml-previewer.vim")
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins

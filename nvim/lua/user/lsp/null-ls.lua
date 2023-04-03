@@ -9,20 +9,23 @@ local formatting = null_ls.builtins.formatting
 local diagnostics = null_ls.builtins.diagnostics
 
 null_ls.setup({
-    debug = false,
+    debug = true,
     sources = {
-        formatting.prettier.with({ extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" } }),
-        formatting.yapf,
-        diagnostics.flake8.with({
-            args = { "--config /Users/jay_thompson/.config/flake8", "--stdin-display-name", "$FILENAME", "-" },
+        formatting.prettier.with({
+            filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "css", "scss", "less", "html", "json", "jsonc", "markdown", "graphql", "handlebars" }
         }),
-        diagnostics.pylint,
-        diagnostics.pylama,
+        formatting.black,
+        formatting.isort,
         formatting.stylua.with({ extra_args = { "--config-path ~/.config/stylua.toml" } }),
+        formatting.stylelint,
+        formatting.trim_whitespace,
+        formatting.phpcsfixer,
+        formatting.rustfmt,
+        diagnostics.php,
     },
     on_attach = function(client)
-        if client.resolved_capabilities.document_formatting then
-            vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()")
+        if client.supports_method("textDocument/formatting") then
+            vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.format()")
         end
     end,
 })
